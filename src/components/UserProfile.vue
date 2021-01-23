@@ -8,6 +8,21 @@
       <div class="user_profile__follower-count">
         <strong>Followers: </strong> {{ followers }}
       </div>
+      <form class="user_profile__new_tweet" @submit.prevent="createNewTweet">
+        <label for="newTweet"><strong>New Tweet</strong></label>
+        <textarea id="newTweet" rows="4" v-model="newTweetContent"/>
+        <div class="User_profile__tweet_type">
+          <label for="tweetType"><strong>Type: </strong></label>
+          <select id="tweetType" v-model="selectedTweetType">
+            <option :value="option.value" v-for="(option, index) in tweetTypes" :key="index">
+              {{ option.name }}
+            </option>
+          </select>
+        </div>
+        <button>
+          Tweet!
+        </button>
+      </form>
     </div>
     <div class="user_profile__tweets-wrapper">
         <TweetItem 
@@ -31,6 +46,12 @@ export default {
   },
   data() {
     return {
+      newTweetContent: "",
+      selectedTweetType: "instant",
+      tweetTypes : [
+        { value: "draft", name: "Draft" },
+        { value: "instant", name: "Instant Tweet" }
+      ],
       followers: 0,
       user : {
         id: 1,
@@ -64,6 +85,15 @@ export default {
     },
     toggleFavorite(id) {
       console.log(`favorite tweet ${id}`)
+    },
+    createNewTweet() {
+      if(this.newTweetContent && this.selectedTweetType !== "draft") {
+          this.user.tweets.unshift({
+            id: this.user.tweets.length + 1,
+            content: this.newTweetContent
+          })
+          this.newTweetContent = "";
+      }
     }
   },
   mounted() {
@@ -83,11 +113,10 @@ export default {
     .user_profile__user-panel {
         display: flex;
         flex-direction: column;
-        margin-right: 50px;
+        margin: 0 50px;
         padding: 0.4rem 2.5rem;
         background-color: white;
         border-radius: 5px;
-        border: 1px solid black;
     }
     h1 {
         margin: 0;
@@ -106,5 +135,11 @@ export default {
     }
     .user_profile__follower-count {
         margin: 0.5rem 0;
+    }
+    .user_profile__new_tweet {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #DFE3E8;
+      padding-top: 25px;
     }
 </style>

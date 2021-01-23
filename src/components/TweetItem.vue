@@ -41,6 +41,7 @@ export default {
         border: 1px solid #DFE3E8;
         cursor: pointer;
         transition: all 0.25s ease;
+        margin: 0.5rem;
     }
     .tweet_item:hover {
         transform: scale(1.1, 1.1);
