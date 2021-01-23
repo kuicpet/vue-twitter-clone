@@ -8,21 +8,7 @@
       <div class="user_profile__follower-count">
         <strong>Followers: </strong> {{ followers }}
       </div>
-      <form class="user_profile__new_tweet" @submit.prevent="createNewTweet" :class="{ 'exceeded': newTweetCharacterCount > 180 }">
-        <label for="newTweet"><strong>New Tweet</strong>({{ newTweetCharacterCount }}/180)</label>
-        <textarea id="newTweet" rows="4" v-model="newTweetContent"/>
-        <div class="User_profile__tweet_type">
-          <label for="tweetType"><strong>Type: </strong></label>
-          <select id="tweetType" class="create_tweet__type" v-model="selectedTweetType">
-            <option :value="option.value" v-for="(option, index) in tweetTypes" :key="index">
-              {{ option.name }}
-            </option>
-          </select>
-        </div>
-        <button>
-          Tweet!
-        </button>
-      </form>
+      <CreateTweet @add-tweet="addTweet" />
     </div>
     <div class="user_profile__tweets-wrapper">
         <TweetItem 
@@ -38,20 +24,16 @@
 
 <script>
 import TweetItem from "./TweetItem";
+import CreateTweet from "./CreateTweet";
 
 export default {
-  name: 'App',
+  name: 'UserProfile',
   components: {
-    TweetItem
+    TweetItem,
+    CreateTweet
   },
   data() {
     return {
-      newTweetContent: "",
-      selectedTweetType: "instant",
-      tweetTypes : [
-        { value: "draft", name: "Draft" },
-        { value: "instant", name: "Instant Tweet" }
-      ],
       followers: 0,
       user : {
         id: 1,
@@ -77,9 +59,6 @@ export default {
   computed : {
     fullName() {
       return `${this.user.firstName} ${this.user.lastName}`
-    },
-    newTweetCharacterCount() {
-      return this.newTweetContent.length;
     }
   },
   methods : {
@@ -89,14 +68,8 @@ export default {
     toggleFavorite(id) {
       console.log(`favorite tweet ${id}`)
     },
-    createNewTweet() {
-      if(this.newTweetContent && this.selectedTweetType !== "draft") {
-          this.user.tweets.unshift({
-            id: this.user.tweets.length + 1,
-            content: this.newTweetContent
-          })
-          this.newTweetContent = "";
-      }
+    addTweet(tweet) {
+      this.user.tweets.unshift({id: this.user.tweets.length + 1, content: tweet })
     }
   },
   mounted() {
@@ -137,31 +110,7 @@ export default {
         .user_profile__follower-count {
           margin: 0.5rem 0;
         }
-        .user_profile__new_tweet {
-          display: flex;
-          flex-direction: column;
-          border-top: 1px solid #DFE3E8;
-          padding-top: 20px;
-          &.exceeded {
-            color: red;
-            border-color: red;
-
-            button {
-              background-color: red;
-              color: white;
-              border: none;
-            }
-          }
-          .user_profile__tweet_type {
-            display: flex;
-            justify-content: space-around;
-          }
-        }
-        textarea {
-          border: 1px solid #DFE3E8;
-          border-radius: 5px;
-        }
-
+        
       }
     }
 
